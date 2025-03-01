@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo App</title>
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #1f4037, #99f2c8);
+            color: white;
+            transition: all 0.3s ease-in-out;
+        }
+        .container {
+            max-width: 700px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease-in-out;
+        }
+        h1 {
+            text-align: center;
+            font-weight: bold;
+            color: #f8f9fa;
+        }
+
+        /* Input & Buttons */
+        .task-input, .form-select, .form-control {
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .task-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .btn-custom {
+            border-radius: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        .btn-clear {
+            background: #ff4d4d;
+            color: white;
+        }
+        .btn-clear:hover {
+            background: #d93636;
+            transform: scale(1.05);
+        }
+        .btn-dark-mode {
+            background: #222;
+            color: white;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        /* Task Cards */
+        .task-card {
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            transition: all 0.3s ease-in-out;
+        }
+        .task-card:hover {
+            transform: scale(1.03);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Priority Tags */
+        .priority-badge {
+            font-size: 12px;
+            padding: 5px 12px;
+            border-radius: 15px;
+            color: white;
+        }
+        .priority-low { background-color: #28a745; }
+        .priority-medium { background-color: #ffc107; }
+        .priority-high { background-color: #dc3545; }
+
+        /* Dark Mode */
+        .dark-mode {
+            background: #121212;
+            color: #f8f9fa;
+        }
+        .dark-mode .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        .dark-mode .task-card {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .dark-mode .task-card:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Dark Mode Toggle -->
+<div class="text-end p-3">
+    <button class="btn btn-dark-mode" onclick="toggleDarkMode()">
+        <i class="bi bi-moon"></i> Toggle Dark Mode
+    </button>
+</div>
+
+<div class="container mt-4">
+    <h1><i class="bi bi-check2-circle"></i> Todo App</h1>
+
+    <!-- Task Input Form -->
+    <form action="/tasks/create" method="post" class="row g-2 mt-3">
+        <div class="col-md-5">
+            <input class="form-control task-input" type="text" name="title" placeholder="Enter Task..." required>
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" name="priority">
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <input class="form-control" type="date" name="dueDate">
+        </div>
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-primary btn-lg btn-custom">
+                <i class="bi bi-plus-circle"></i> Add
+            </button>
+        </div>
+    </form>
+
+    <!-- Clear All Tasks Button -->
+    <button onclick="window.location.href='/tasks/deleteAll'" class="btn btn-clear btn-sm mt-3 w-100">
+        <i class="bi bi-trash"></i> Clear All Tasks
+    </button>
+
+    <!-- Task List -->
+    <div class="mt-4">
+        <th:block th:each="task : ${tasks}">
+            <div class="card task-card mb-3">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="bi bi-check-circle text-success" th:if="${task.completed}"></i>
+                        <i class="bi bi-circle text-muted" th:if="!${task.completed}"></i>
+                        <span th:text="${task.title}" class="fw-bold"></span>
+                    </div>
+                    <span th:text="${task.dueDate}" class="text-muted"></span>
+                    <span th:class="'priority-badge ' + (${task.priority} == 'High' ? 'priority-high' : (${task.priority} == 'Medium' ? 'priority-medium' : 'priority-low'))" th:text="${task.priority}"></span>
+                    <div>
+                        <a th:href="@{/tasks/{id}/toggle(id=${task.id})}" class="btn btn-success btn-sm">
+                            <i class="bi bi-check"></i> Complete
+                        </a>
+                        <a th:href="@{/tasks/{id}/delete(id=${task.id})}" class="btn btn-danger btn-sm">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+    </div>
+</div>
+
+<!-- Dark Mode Script -->
+<script>
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+    }
+</script>
+
+</body>
+</html>
