@@ -27,3 +27,5 @@ Open your browser and visit:
 ```
 http://localhost:8080/tasks
 ```
+![Screenshot 2025-03-01 103656](https://github.com/user-attachments/assets/d4f46bd6-e2bd-4135-b5d7-c6ccb1d11316)
+![Screenshot 2025-03-01 103409](https://github.com/user-attachments/assets/c73c28d6-b6b6-4b48-b829-c0a1627ffa21)
