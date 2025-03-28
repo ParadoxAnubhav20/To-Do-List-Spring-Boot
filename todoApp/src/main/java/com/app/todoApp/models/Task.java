@@ -15,8 +15,8 @@ public class Task {
     private long id;
     private boolean completed;
     private String title;
-    private String priority; // New field: Low, Medium, High
-    private LocalDate dueDate; // New field: Task deadline
+    private String priority;
+    private LocalDate dueDate;
 
     public long getId() {
         return id;
